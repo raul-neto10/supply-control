@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="d-flex justify-content-between mb-3 align-items-center">
+    <h2 class="h5">Empréstimos</h2>
+    <a class="btn btn-success" href="{{ url_for('new_loan') }}">+ Novo empréstimo</a>
+  </div>
+
+  <ul class="nav nav-tabs mb-3" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab">
+        Pendentes (<strong>{{ pending_loans|length }}</strong>)
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="returned-tab" data-bs-toggle="tab" data-bs-target="#returned" type="button" role="tab">
+        Devolvidos (<strong>{{ returned_loans|length }}</strong>)
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="pending" role="tabpanel">
+      {% if pending_loans %}
+        <div class="table-responsive">
+          <table class="table table-sm table-hover">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Quantidade</th>
+                <th>Emprestado por</th>
+                <th>Data empréstimo</th>
+                <th>Devolução esperada</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for loan in pending_loans %}
+                <tr>
+                  <td><a href="{{ url_for('view_item', item_id=loan.item.id) }}">{{ loan.item.name }}</a></td>
+                  <td>{{ loan.quantity }}</td>
+                  <td>{{ loan.borrowed_by }}</td>
+                  <td>{{ loan.created_at.strftime('%Y-%m-%d') }}</td>
+                  <td>
+                    {% if loan.expected_return %}
+                      {{ loan.expected_return.strftime('%Y-%m-%d') }}
+                      {% if loan.expected_return < now %}
+                        <span class="badge bg-danger">Atrasado</span>
+                      {% endif %}
+                    {% else %}
+                      —
+                    {% endif %}
+                  </td>
+                  <td>
+                    <form method="post" action="{{ url_for('return_loan', loan_id=loan.id) }}" style="display:inline;">
+                      <button class="btn btn-sm btn-outline-success" onclick="return confirm('Confirmar devolução?');">Devolvido</button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-secondary">Nenhum empréstimo pendente.</div>
+      {% endif %}
+    </div>
+
+    <div class="tab-pane fade" id="returned" role="tabpanel">
+      {% if returned_loans %}
+        <div class="table-responsive">
+          <table class="table table-sm table-hover">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Quantidade</th>
+                <th>Emprestado por</th>
+                <th>Devolvido em</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for loan in returned_loans %}
+                <tr>
+                  <td><a href="{{ url_for('view_item', item_id=loan.item.id) }}">{{ loan.item.name }}</a></td>
+                  <td>{{ loan.quantity }}</td>
+                  <td>{{ loan.borrowed_by }}</td>
+                  <td>{{ loan.returned_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="alert alert-secondary">Nenhum empréstimo devolvido ainda.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <a class="btn btn-secondary mt-3" href="{{ url_for('index') }}">Voltar</a>
+
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h2 class="h4 mb-4">📥 Importar Equipamentos</h2>
+
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">Carregar Arquivo</h5>
+        </div>
+
+        <div class="card-body">
+          <form method="POST" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="file" class="form-label"><strong>Selecione o arquivo:</strong></label>
+              <input type="file" class="form-control" id="file" name="file" 
+                     accept=".csv,.xlsx,.xls" required>
+              <small class="form-text text-muted d-block mt-2">
+                📄 Formatos aceitos: CSV, XLSX, XLS
+              </small>
+            </div>
+
+            <div class="alert alert-info">
+              <strong>ℹ️ Estrutura esperada do arquivo:</strong>
+              <ul class="mb-0 mt-2">
+                <li>LOCALIZAÇÃO / SETOR</li>
+                <li>TIPO</li>
+                <li>HOST</li>
+                <li>IP</li>
+                <li>PROCESSADOR</li>
+                <li>MEMÓRIA RAM</li>
+                <li>ARMAZENAMENTO</li>
+                <li>MAC</li>
+                <li>PATRIMÔNIO</li>
+                <li>SISTEMA OPERACIONAL</li>
+                <li>COD.MONITOR SIMPRESS</li>
+              </ul>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
+              📤 Enviar Arquivo
+            </button>
+            <a href="{{ url_for('equipment_mapping') }}" class="btn btn-secondary w-100 mt-2">
+              ← Cancelar
+            </a>
+          </form>
+        </div>
+      </div>
+
+      <div class="alert alert-warning mt-4">
+        <strong>⚠️ Atenção:</strong>
+        <ul class="mb-0 mt-2">
+          <li>Equipamentos com mesmo HOST serão atualizados</li>
+          <li>Equipamentos novos serão adicionados</li>
+          <li>O arquivo será processado e depois deletado</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

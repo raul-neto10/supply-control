@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <h2 class="h5 mb-3">Editar item</h2>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.name.label(class_='form-label') }}
+      {{ form.name(class_='form-control') }}
+    </div>
+    <div class="mb-3">
+      {{ form.category.label(class_='form-label') }}
+      {{ form.category(class_='form-select') }}
+    </div>
+    <div class="mb-3">
+      {{ form.quantity.label(class_='form-label') }}
+      {{ form.quantity(class_='form-control', min=0) }}
+    </div>
+    <div class="mb-3">
+      {{ form.location.label(class_='form-label') }}
+      {{ form.location(class_='form-control') }}
+    </div>
+    <div class="mb-3">
+      {{ form.serial.label(class_='form-label') }}
+      {{ form.serial(class_='form-control') }}
+    </div>
+    <div class="mb-3">
+      {{ form.sector.label(class_='form-label') }}
+      {{ form.sector(class_='form-control') }}
+    </div>
+    <div class="mb-3">
+      {{ form.description.label(class_='form-label') }}
+      {{ form.description(class_='form-control', rows=3) }}
+    </div>
+    <button class="btn btn-primary">Salvar</button>
+    <a class="btn btn-secondary" href="{{ url_for('view_item', item_id=item.id) }}">Cancelar</a>
+  </form>
+
+{% endblock %}

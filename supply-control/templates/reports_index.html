@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <h2 class="h5 mb-4">Relatórios</h2>
+  
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">📦 Relatório de Estoque</h5>
+          <p class="card-text text-muted">Visualize todos os itens em estoque com quantidade, local e setor.</p>
+          <a href="{{ url_for('report_stock') }}" class="btn btn-primary btn-sm">Acessar</a>
+          <a href="{{ url_for('report_stock', export='csv') }}" class="btn btn-outline-success btn-sm">CSV</a>
+          <a href="{{ url_for('report_stock', export='pdf') }}" class="btn btn-outline-danger btn-sm">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">📊 Relatório de Movimentações</h5>
+          <p class="card-text text-muted">Histórico de entradas e saídas com filtros por período e item.</p>
+          <a href="{{ url_for('report_movements') }}" class="btn btn-primary btn-sm">Acessar</a>
+          <a href="{{ url_for('report_movements', export='csv') }}" class="btn btn-outline-success btn-sm">CSV</a>
+          <a href="{{ url_for('report_movements', export='pdf') }}" class="btn btn-outline-danger btn-sm">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">🔄 Relatório de Empréstimos</h5>
+          <p class="card-text text-muted">Acompanhe empréstimos pendentes e devolvidos.</p>
+          <a href="{{ url_for('report_loans') }}" class="btn btn-primary btn-sm">Acessar</a>
+          <a href="{{ url_for('report_loans', export='csv') }}" class="btn btn-outline-success btn-sm">CSV</a>
+          <a href="{{ url_for('report_loans', export='pdf') }}" class="btn btn-outline-danger btn-sm">PDF</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h5 class="card-title">🏢 Relatório por Setor</h5>
+          <p class="card-text text-muted">Distribuição de insumos por setor/centro de custo.</p>
+          <a href="{{ url_for('report_sector') }}" class="btn btn-primary btn-sm">Acessar</a>
+          <a href="{{ url_for('report_sector', export='csv') }}" class="btn btn-outline-success btn-sm">CSV</a>
+          <a href="{{ url_for('report_sector', export='pdf') }}" class="btn btn-outline-danger btn-sm">PDF</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <a href="{{ url_for('index') }}" class="btn btn-secondary mt-3">Voltar</a>
+
+{% endblock %}

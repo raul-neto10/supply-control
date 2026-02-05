@@ -1,0 +1,53 @@
+nohup: ignorando entrada
+ * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://154.3.15.111:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [01/Feb/2026 15:42:56] "[32mGET /reports HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 15:43:34] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:43:34] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Feb/2026 15:43:34] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Feb/2026 15:43:37] "[32mPOST /login HTTP/1.1[0m" 302 -
+/home/rps1002/Documentos/Projects/supply-control/app.py:143: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  return User.query.get(int(user_id))
+127.0.0.1 - - [01/Feb/2026 15:43:37] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:43:37] "[33mGET /.well-known/appspecific/com.chrome.devtools.json HTTP/1.1[0m" 404 -
+127.0.0.1 - - [01/Feb/2026 15:43:44] "GET /reports HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:43:52] "GET /reports/stock HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:44:45] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:44:50] "GET /item/add HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:46:04] "[32mPOST /item/add HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 15:46:05] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:46:07] "GET /item/add HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:46:39] "[32mPOST /item/add HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 15:46:39] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:47:01] "GET /item/add HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:57:34] "GET /item/add HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:57:35] "[32mGET /logout HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 15:57:35] "[32mGET / HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 15:57:35] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:57:35] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Feb/2026 15:57:38] "[32mPOST /login HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 15:57:38] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:57:47] "GET /item/add HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:58:14] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:58:16] "GET /item/1 HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:58:26] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:58:28] "GET /item/add HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:59:34] "GET /item/add HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:59:37] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:59:43] "GET /item/add HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:59:45] "[32mGET /logout HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 15:59:45] "[32mGET / HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 15:59:45] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:59:45] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [01/Feb/2026 15:59:46] "[32mPOST /login HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 15:59:46] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 15:59:50] "GET /item/add HTTP/1.1" 200 -
+/home/rps1002/Documentos/Projects/supply-control/app.py:407: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return render_template('loans_list.html', pending_loans=pending_loans, returned_loans=returned_loans, now=datetime.utcnow())
+127.0.0.1 - - [01/Feb/2026 16:00:00] "GET /loans HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 16:00:02] "GET /loan/new HTTP/1.1" 200 -

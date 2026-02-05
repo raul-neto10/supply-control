@@ -1,0 +1,66 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5">Relatório por Setor</h2>
+    <div>
+      <a href="{{ url_for('report_sector', export='csv') }}" class="btn btn-sm btn-success">📥 CSV</a>
+      <a href="{{ url_for('report_sector', export='pdf') }}" class="btn btn-sm btn-danger">📄 PDF</a>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <h6 class="card-title">Total de setores</h6>
+          <p class="display-6">{{ sectors|length }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card bg-info text-white">
+        <div class="card-body">
+          <h6 class="card-title">Total de tipos de itens</h6>
+          <p class="display-6">
+            {% set total_items = [] %}
+            {% for sector, data in sectors.items() %}
+              {% set _ = total_items.extend(data['items']) %}
+            {% endfor %}
+            {{ total_items|length }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Setor</th>
+          <th>Tipos de itens</th>
+          <th>Quantidade total</th>
+          <th>Itens</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sector, data in sectors.items()|sort %}
+          <tr>
+            <td><strong>{{ sector }}</strong></td>
+            <td>{{ data.count }}</td>
+            <td><span class="badge bg-primary">{{ data.quantity }}</span></td>
+            <td>
+              {% for item in data['items'] %}
+                <small class="badge bg-light text-dark">{{ item.name }} ({{ item.quantity }})</small>
+              {% endfor %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <a href="{{ url_for('reports') }}" class="btn btn-secondary mt-3">Voltar</a>
+
+{% endblock %}

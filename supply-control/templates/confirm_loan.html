@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <h2 class="h5 mb-3">Confirmar empréstimo — {{ item.name }}</h2>
+  <div class="card mb-3">
+    <div class="card-body">
+      <p><strong>Item:</strong> {{ item.name }}</p>
+      <p><strong>Quantidade:</strong> {{ qty }}</p>
+      <p><strong>Emprestado por:</strong> {{ borrowed_by }}</p>
+      {% if contact %}
+        <p><strong>Contato:</strong> {{ contact }}</p>
+      {% endif %}
+      {% if expected_return %}
+        <p><strong>Data de devolução:</strong> {{ expected_return }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="alert alert-warning">
+    <strong>Atenção!</strong> Ao confirmar, o estoque será reduzido imediatamente. Insira sua senha para confirmar a operação.
+  </div>
+
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.password.label(class_='form-label') }}
+      {{ form.password(class_='form-control') }}
+    </div>
+    <button class="btn btn-success">Confirmar empréstimo</button>
+    <a class="btn btn-secondary" href="{{ url_for('view_item', item_id=item.id) }}">Cancelar</a>
+  </form>
+
+{% endblock %}

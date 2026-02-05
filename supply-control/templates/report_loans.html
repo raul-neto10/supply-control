@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5">Relatório de Empréstimos</h2>
+    <div>
+      <a href="{{ url_for('report_loans', export='csv', status=status) }}" class="btn btn-sm btn-success">📥 CSV</a>
+      <a href="{{ url_for('report_loans', export='pdf', status=status) }}" class="btn btn-sm btn-danger">📄 PDF</a>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a class="nav-link {% if status == 'all' %}active{% endif %}" href="{{ url_for('report_loans', status='all') }}">Todos</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if status == 'pending' %}active{% endif %}" href="{{ url_for('report_loans', status='pending') }}">Pendentes</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if status == 'returned' %}active{% endif %}" href="{{ url_for('report_loans', status='returned') }}">Devolvidos</a>
+    </li>
+  </ul>
+
+  <div class="table-responsive">
+    <table class="table table-sm table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Item</th>
+          <th>Quantidade</th>
+          <th>Emprestado por</th>
+          <th>Contato</th>
+          <th>Data empréstimo</th>
+          <th>Devolução esperada</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for loan in loans %}
+          <tr>
+            <td><strong>{{ loan.item.name }}</strong></td>
+            <td>{{ loan.quantity }}</td>
+            <td>{{ loan.borrowed_by }}</td>
+            <td>{{ loan.contact or '—' }}</td>
+            <td>{{ loan.created_at.strftime('%d/%m/%Y') }}</td>
+            <td>
+              {% if loan.expected_return %}
+                {{ loan.expected_return.strftime('%d/%m/%Y') }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td>
+              {% if loan.returned_at %}
+                <span class="badge bg-success">Devolvido</span>
+              {% else %}
+                <span class="badge bg-warning">Pendente</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <a href="{{ url_for('reports') }}" class="btn btn-secondary mt-3">Voltar</a>
+
+{% endblock %}

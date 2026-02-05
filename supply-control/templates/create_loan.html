@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <h2 class="h5 mb-3">Registrar empréstimo — {{ item.name }}</h2>
+  <div class="alert alert-info">
+    <strong>Quantidade disponível:</strong> {{ item.quantity }}
+  </div>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.quantity.label(class_='form-label') }}
+      {{ form.quantity(class_='form-control') }}
+      <small class="form-text text-muted">Quantidade a emprestar</small>
+    </div>
+    <div class="mb-3">
+      {{ form.borrowed_by.label(class_='form-label') }}
+      {{ form.borrowed_by(class_='form-control') }}
+      <small class="form-text text-muted">Quem está levando o item</small>
+    </div>
+    <div class="mb-3">
+      {{ form.contact.label(class_='form-label') }}
+      {{ form.contact(class_='form-control') }}
+      <small class="form-text text-muted">Telefone ou e-mail para contato</small>
+    </div>
+    <div class="mb-3">
+      {{ form.expected_return.label(class_='form-label') }}
+      {{ form.expected_return(class_='form-control', placeholder='YYYY-MM-DD') }}
+      <small class="form-text text-muted">Data esperada de devolução</small>
+    </div>
+    <div class="mb-3">
+      {{ form.notes.label(class_='form-label') }}
+      {{ form.notes(class_='form-control', rows=3) }}
+    </div>
+    <button class="btn btn-primary">Continuar</button>
+    <a class="btn btn-secondary" href="{{ url_for('view_item', item_id=item.id) }}">Cancelar</a>
+  </form>
+
+{% endblock %}

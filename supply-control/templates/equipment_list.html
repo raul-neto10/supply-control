@@ -1,0 +1,203 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h2 class="h4">📋 Lista de Equipamentos</h2>
+    </div>
+    <div class="col-md-4 text-end">
+      {% if current_user.is_admin or current_user.is_superadmin %}
+        <a href="{{ url_for('create_new_equipment') }}" class="btn btn-success btn-sm me-2">
+          ➕ Novo Equipamento
+        </a>
+      {% endif %}
+      <a href="{{ url_for('equipment_mapping') }}" class="btn btn-secondary btn-sm">← Voltar</a>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card mb-4">
+    <div class="card-header">
+      <h6 class="mb-0">🔍 Filtros</h6>
+    </div>
+    <div class="card-body">
+      <form method="GET" class="row">
+        <div class="col-md-4 mb-2">
+          <input type="text" name="search" class="form-control form-control-sm" 
+                 placeholder="HOST, IP, MAC..." value="{{ request.args.get('search', '') }}">
+        </div>
+        <div class="col-md-2 mb-2">
+          <button type="submit" class="btn btn-primary btn-sm">Buscar</button>
+          <a href="{{ url_for('list_equipment') }}" class="btn btn-secondary btn-sm">Limpar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tabela -->
+  <div class="table-responsive">
+    <table class="table table-hover table-sm">
+      <thead class="table-dark">
+        <tr>
+          <th>Localização</th>
+          <th>Tipo</th>
+          <th>HOST</th>
+          <th>IP</th>
+          <th>Processador</th>
+          <th>Memória</th>
+          <th>SO</th>
+          <th>Status</th>
+          <th>Ação</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for equipment in equipments %}
+          <tr>
+            <td><small>{{ equipment.localization }}</small></td>
+            <td>
+              {% if equipment.equipment_type == 'Computador' %}
+                <span class="badge bg-info">💻</span>
+              {% elif equipment.equipment_type == 'Notebook' %}
+                <span class="badge bg-primary">💼</span>
+              {% elif equipment.equipment_type == 'Impressora' %}
+                <span class="badge bg-warning">🖨️</span>
+              {% elif equipment.equipment_type == 'Carrinho Beira-Leito' %}
+                <span class="badge bg-danger">🛏️</span>
+              {% endif %}
+              <small>{{ equipment.equipment_type }}</small>
+            </td>
+            <td><code>{{ equipment.host or '-' }}</code></td>
+            <td><small>{{ equipment.ip_address or '-' }}</small></td>
+            <td><small>{{ equipment.processor or '-' }}</small></td>
+            <td><small>{{ equipment.memory_ram or '-' }}</small></td>
+            <td><small>{{ equipment.operating_system or '-' }}</small></td>
+            <td>
+              {% if equipment.status == 'Ativo' %}
+                <span class="badge bg-success">✅ Ativo</span>
+              {% elif equipment.status == 'Manutenção' %}
+                <span class="badge bg-warning">🔧 Manutenção</span>
+              {% else %}
+                <span class="badge bg-danger">❌ Inativo</span>
+              {% endif %}
+            </td>
+            <td>
+              <div class="btn-group btn-group-sm" role="group">
+                <a href="{{ url_for('view_equipment', equipment_id=equipment.id) }}" 
+                   class="btn btn-outline-primary" title="Ver detalhes">👁️</a>
+                {% if current_user.is_admin or current_user.is_superadmin %}
+                  <a href="{{ url_for('edit_equipment', equipment_id=equipment.id) }}" 
+                     class="btn btn-outline-warning" title="Editar">✏️</a>
+                  <button class="btn btn-outline-danger" title="Deletar"
+                          onclick="deleteEquipment({{ equipment.id }}, '{{ equipment.host }}')">🗑️</button>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="9" class="text-center text-muted py-4">
+              Nenhum equipamento encontrado
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginação -->
+  {% if pagination.pages > 1 %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+        {% if pagination.has_prev %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('list_equipment', page=pagination.prev_num) }}">Anterior</a>
+          </li>
+        {% endif %}
+        
+        {% for page_num in pagination.iter_pages() %}
+          {% if page_num %}
+            {% if page_num == current_page %}
+              <li class="page-item active">
+                <span class="page-link">{{ page_num }}</span>
+              </li>
+            {% else %}
+              <li class="page-item">
+                <a class="page-link" href="{{ url_for('list_equipment', page=page_num) }}">{{ page_num }}</a>
+              </li>
+            {% endif %}
+          {% else %}
+            <li class="page-item disabled">
+              <span class="page-link">...</span>
+            </li>
+          {% endif %}
+        {% endfor %}
+        
+        {% if pagination.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('list_equipment', page=pagination.next_num) }}">Próxima</a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  {% endif %}
+</div>
+
+<!-- Modal de Confirmação para Deletar -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">🗑️ Deletar Equipamento</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja deletar o equipamento: <strong id="equipmentName"></strong>?</p>
+        <p class="text-danger"><strong>Esta ação não pode ser desfeita.</strong></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirmDelete">Deletar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let currentDeleteId = null;
+const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+function deleteEquipment(equipmentId, equipmentName) {
+  currentDeleteId = equipmentId;
+  document.getElementById('equipmentName').textContent = equipmentName || 'equipamento #' + equipmentId;
+  deleteModal.show();
+}
+
+document.getElementById('confirmDelete').addEventListener('click', async () => {
+  if (!currentDeleteId) return;
+  
+  try {
+    const response = await fetch(`/mapeamento/equipamento/${currentDeleteId}/deletar`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      alert(result.message);
+      location.reload();
+    } else {
+      alert('Erro: ' + result.message);
+      deleteModal.hide();
+    }
+  } catch (error) {
+    alert('Erro ao deletar: ' + error.message);
+    deleteModal.hide();
+  }
+});
+</script>
+{% endblock %}
+

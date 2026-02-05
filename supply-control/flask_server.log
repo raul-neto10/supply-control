@@ -1,0 +1,40 @@
+ * Serving Flask app 'app'
+ * Debug mode: off
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://154.3.15.111:5000
+[33mPress CTRL+C to quit[0m
+127.0.0.1 - - [01/Feb/2026 19:55:10] "POST /login HTTP/1.1" 200 -
+127.0.0.1 - - [01/Feb/2026 19:55:10] "[32mGET /mapeamento HTTP/1.1[0m" 302 -
+127.0.0.1 - - [01/Feb/2026 19:55:10] "GET /login?next=/mapeamento HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:25:30] "POST /login HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:25:30] "[32mGET /mapeamento HTTP/1.1[0m" 302 -
+127.0.0.1 - - [02/Feb/2026 00:25:30] "GET /login?next=/mapeamento HTTP/1.1" 200 -
+/home/rps1002/Documentos/Projects/supply-control/app.py:223: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+  return User.query.get(int(user_id))
+127.0.0.1 - - [02/Feb/2026 00:29:09] "[32mGET /logout HTTP/1.1[0m" 302 -
+127.0.0.1 - - [02/Feb/2026 00:29:09] "[32mGET / HTTP/1.1[0m" 302 -
+127.0.0.1 - - [02/Feb/2026 00:29:09] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:29:09] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [02/Feb/2026 00:29:11] "[32mPOST /login HTTP/1.1[0m" 302 -
+127.0.0.1 - - [02/Feb/2026 00:29:11] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:29:20] "GET /mapeamento HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:29:34] "GET /mapeamento/equipamentos HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:29:43] "GET /mapeamento/novo HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:30:21] "GET /mapeamento/equipamentos HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:42:02] "[32mGET /mapeamento HTTP/1.1[0m" 302 -
+127.0.0.1 - - [02/Feb/2026 00:44:08] "GET /mapeamento/equipamentos HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:44:12] "[32mGET /logout HTTP/1.1[0m" 302 -
+127.0.0.1 - - [02/Feb/2026 00:44:12] "[32mGET / HTTP/1.1[0m" 302 -
+127.0.0.1 - - [02/Feb/2026 00:44:12] "GET /login HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:44:12] "[36mGET /static/logo.png HTTP/1.1[0m" 304 -
+127.0.0.1 - - [02/Feb/2026 00:44:14] "[32mPOST /login HTTP/1.1[0m" 302 -
+127.0.0.1 - - [02/Feb/2026 00:44:14] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:44:16] "GET /mapeamento HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:44:21] "GET /mapeamento/equipamentos HTTP/1.1" 200 -
+/home/rps1002/Documentos/Projects/supply-control/app.py:850: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return render_template('loans_list.html', pending_loans=pending_loans, returned_loans=returned_loans, now=datetime.utcnow())
+127.0.0.1 - - [02/Feb/2026 00:44:28] "GET /loans HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:44:29] "GET /dashboard HTTP/1.1" 200 -
+127.0.0.1 - - [02/Feb/2026 00:44:38] "GET /users HTTP/1.1" 200 -

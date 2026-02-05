@@ -1,0 +1,277 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h2 class="h4">
+        {% if action == 'criar' %}
+          ➕ Novo Equipamento
+        {% else %}
+          ✏️ Editar Equipamento
+        {% endif %}
+      </h2>
+    </div>
+    <div class="col-md-4 text-end">
+      <a href="{{ url_for('list_equipment') }}" class="btn btn-secondary btn-sm">← Voltar</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <form method="POST" id="equipmentForm">
+            <!-- Linha 1: Localização e Tipo -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label" for="localization">
+                  📍 Localização <span class="text-danger">*</span>
+                </label>
+                <input type="text" class="form-control" id="localization" name="localization"
+                       list="localizationList"
+                       value="{% if equipment %}{{ equipment.localization }}{% endif %}"
+                       required>
+                <datalist id="localizationList">
+                  {% for loc in localizations %}
+                    <option value="{{ loc }}">
+                  {% endfor %}
+                </datalist>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="equipment_type">
+                  💻 Tipo de Equipamento <span class="text-danger">*</span>
+                </label>
+                <select class="form-select" id="equipment_type" name="equipment_type" required>
+                  <option value="">Selecione...</option>
+                  <option value="Computador" {% if equipment and equipment.equipment_type == 'Computador' %}selected{% endif %}>Computador</option>
+                  <option value="Notebook" {% if equipment and equipment.equipment_type == 'Notebook' %}selected{% endif %}>Notebook</option>
+                  <option value="Impressora" {% if equipment and equipment.equipment_type == 'Impressora' %}selected{% endif %}>Impressora</option>
+                  <option value="Carrinho Beira-Leito" {% if equipment and equipment.equipment_type == 'Carrinho Beira-Leito' %}selected{% endif %}>Carrinho Beira-Leito</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Linha 2: HOST e IP -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label" for="host">
+                  🖥️ HOST
+                </label>
+                <input type="text" class="form-control" id="host" name="host"
+                       value="{% if equipment %}{{ equipment.host or '' }}{% endif %}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="ip_address">
+                  🌐 Endereço IP
+                </label>
+                <input type="text" class="form-control" id="ip_address" name="ip_address"
+                       placeholder="xxx.xxx.xxx.xxx"
+                       value="{% if equipment %}{{ equipment.ip_address or '' }}{% endif %}">
+              </div>
+            </div>
+
+            <!-- Linha 3: Processador e Memória -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label" for="processor">
+                  ⚙️ Processador
+                </label>
+                <input type="text" class="form-control" id="processor" name="processor"
+                       placeholder="Ex: Intel Core i7"
+                       value="{% if equipment %}{{ equipment.processor or '' }}{% endif %}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="memory_ram">
+                  🧠 Memória RAM
+                </label>
+                <input type="text" class="form-control" id="memory_ram" name="memory_ram"
+                       placeholder="Ex: 16GB"
+                       value="{% if equipment %}{{ equipment.memory_ram or '' }}{% endif %}">
+              </div>
+            </div>
+
+            <!-- Linha 4: Armazenamento e MAC -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label" for="storage">
+                  💾 Armazenamento
+                </label>
+                <input type="text" class="form-control" id="storage" name="storage"
+                       placeholder="Ex: 512GB SSD"
+                       value="{% if equipment %}{{ equipment.storage or '' }}{% endif %}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="mac_address">
+                  📡 MAC Address
+                </label>
+                <input type="text" class="form-control" id="mac_address" name="mac_address"
+                       placeholder="XX:XX:XX:XX:XX:XX"
+                       value="{% if equipment %}{{ equipment.mac_address or '' }}{% endif %}">
+              </div>
+            </div>
+
+            <!-- Linha 5: Sistema Operacional e Código Patrimônio -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label" for="operating_system">
+                  🖱️ Sistema Operacional
+                </label>
+                <input type="text" class="form-control" id="operating_system" name="operating_system"
+                       list="osList"
+                       value="{% if equipment %}{{ equipment.operating_system or '' }}{% endif %}">
+                <datalist id="osList">
+                  {% for os in operating_systems %}
+                    <option value="{{ os }}">
+                  {% endfor %}
+                </datalist>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="patrimony_code">
+                  🏷️ Código Patrimônio
+                </label>
+                <input type="text" class="form-control" id="patrimony_code" name="patrimony_code"
+                       value="{% if equipment %}{{ equipment.patrimony_code or '' }}{% endif %}">
+              </div>
+            </div>
+
+            <!-- Linha 6: Código Monitor e Status -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label class="form-label" for="monitor_code">
+                  🖥️ Código Monitor
+                </label>
+                <input type="text" class="form-control" id="monitor_code" name="monitor_code"
+                       value="{% if equipment %}{{ equipment.monitor_code or '' }}{% endif %}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" for="status">
+                  📊 Status <span class="text-danger">*</span>
+                </label>
+                <select class="form-select" id="status" name="status" required>
+                  <option value="Ativo" {% if not equipment or equipment.status == 'Ativo' %}selected{% endif %}>✅ Ativo</option>
+                  <option value="Manutenção" {% if equipment and equipment.status == 'Manutenção' %}selected{% endif %}>🔧 Manutenção</option>
+                  <option value="Inativo" {% if equipment and equipment.status == 'Inativo' %}selected{% endif %}>❌ Inativo</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Notas -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <label class="form-label" for="notes">
+                  📝 Notas
+                </label>
+                <textarea class="form-control" id="notes" name="notes" rows="3"
+                          placeholder="Observações adicionais...">{% if equipment %}{{ equipment.notes or '' }}{% endif %}</textarea>
+              </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="row mb-3">
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                  {% if action == 'criar' %}
+                    ➕ Adicionar Equipamento
+                  {% else %}
+                    ✅ Salvar Alterações
+                  {% endif %}
+                </button>
+                <a href="{{ url_for('list_equipment') }}" class="btn btn-secondary">Cancelar</a>
+                
+                {% if equipment and action == 'editar' %}
+                  <button type="button" class="btn btn-danger float-end" id="deleteBtn">
+                    🗑️ Deletar Equipamento
+                  </button>
+                {% endif %}
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info Lateral -->
+    <div class="col-md-4">
+      <div class="card bg-light">
+        <div class="card-header">
+          <h6 class="mb-0">ℹ️ Informações</h6>
+        </div>
+        <div class="card-body small">
+          <p>
+            <strong>Preenchimento:</strong><br>
+            Os campos marcados com <span class="text-danger">*</span> são obrigatórios.
+          </p>
+          {% if equipment %}
+            <p>
+              <strong>Criado em:</strong><br>
+              {{ equipment.last_updated.strftime('%d/%m/%Y %H:%M') if equipment.last_updated else 'N/A' }}
+            </p>
+            <p>
+              <strong>ID do Equipamento:</strong><br>
+              <code>{{ equipment.id }}</code>
+            </p>
+          {% endif %}
+          <div class="alert alert-info mb-0 mt-3">
+            <small>💡 Dica: Use as listas de sugestão para localização e S.O. para manter consistência nos dados.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Confirmação para Deletar -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">🗑️ Deletar Equipamento</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja deletar este equipamento?</p>
+        <p class="text-danger"><strong>Esta ação não pode ser desfeita.</strong></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" id="confirmDelete">Deletar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+{% if equipment and action == 'editar' %}
+  const deleteBtn = document.getElementById('deleteBtn');
+  const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+  const equipmentId = {{ equipment.id }};
+  
+  deleteBtn.addEventListener('click', () => {
+    deleteModal.show();
+  });
+  
+  document.getElementById('confirmDelete').addEventListener('click', async () => {
+    try {
+      const response = await fetch(`/mapeamento/equipamento/${equipmentId}/deletar`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(result.message);
+        window.location.href = '{{ url_for("list_equipment") }}';
+      } else {
+        alert('Erro: ' + result.message);
+      }
+    } catch (error) {
+      alert('Erro ao deletar: ' + error.message);
+    }
+  });
+{% endif %}
+</script>
+{% endblock %}

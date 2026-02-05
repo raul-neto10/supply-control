@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <h2 class="h5 mb-3">Adicionar novo item</h2>
+  
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      <label class="form-label">Buscar por código de barras</label>
+      <div class="input-group">
+        <input type="text" id="barcode-input" class="form-control" placeholder="Digite o código de barras...">
+        <button class="btn btn-primary" type="button" id="search-btn">Buscar</button>
+      </div>
+      <div id="search-result" class="alert alert-info mt-2" style="display:none;">
+        <p id="result-text"></p>
+      </div>
+    </div>
+    <div class="mb-3">
+      {{ form.name.label(class_='form-label') }}
+      {{ form.name(class_='form-control') }}
+    </div>
+    <div class="mb-3">
+      {{ form.category.label(class_='form-label') }}
+      {{ form.category(class_='form-select') }}
+    </div>
+    <div class="mb-3">
+      {{ form.quantity.label(class_='form-label') }}
+      {{ form.quantity(class_='form-control', min=0) }}
+    </div>
+    <div class="mb-3">
+      {{ form.location.label(class_='form-label') }}
+      {{ form.location(class_='form-control') }}
+    </div>
+    <div class="mb-3">
+      {{ form.serial.label(class_='form-label') }}
+      {{ form.serial(class_='form-control') }}
+    </div>
+    <div class="mb-3">
+      {{ form.sector.label(class_='form-label') }}
+      {{ form.sector(class_='form-control') }}
+    </div>
+    <div class="mb-3">
+      {{ form.description.label(class_='form-label') }}
+      {{ form.description(class_='form-control', rows=3) }}
+    </div>
+    <button class="btn btn-primary">Salvar</button>
+    <a class="btn btn-secondary" href="{{ url_for('index') }}">Cancelar</a>
+  </form>
+
+  <script>
+    document.getElementById('search-btn').addEventListener('click', function() {
+      const barcode = document.getElementById('barcode-input').value.trim();
+      if (!barcode) {
+        alert('Digite um código de barras');
+        return;
+      }
+
+      fetch(`{{ url_for('search_product_api') }}?barcode=${encodeURIComponent(barcode)}`)
+        .then(response => response.json())
+        .then(data => {
+          const resultDiv = document.getElementById('search-result');
+          const resultText = document.getElementById('result-text');
+          
+          if (data.success) {
+            document.querySelector('input[name="name"]').value = data.name;
+            if (data.category) {
+              document.querySelector('select[name="category"]').value = data.category;
+            }
+            document.querySelector('textarea[name="description"]').value = data.description;
+            document.querySelector('input[name="serial"]').value = data.barcode;
+            
+            resultText.textContent = `✓ Produto encontrado: ${data.name}`;
+            resultDiv.className = 'alert alert-success';
+            resultDiv.style.display = 'block';
+          } else {
+            resultText.textContent = `✗ ${data.error || 'Erro ao buscar produto'}`;
+            resultDiv.className = 'alert alert-danger';
+            resultDiv.style.display = 'block';
+          }
+        })
+        .catch(error => {
+          const resultDiv = document.getElementById('search-result');
+          const resultText = document.getElementById('result-text');
+          resultText.textContent = `✗ Erro ao conectar: ${error}`;
+          resultDiv.className = 'alert alert-danger';
+          resultDiv.style.display = 'block';
+        });
+    });
+
+    // Buscar ao pressionar Enter no input
+    document.getElementById('barcode-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('search-btn').click();
+      }
+    });
+  </script>
+
+{% endblock %}
+

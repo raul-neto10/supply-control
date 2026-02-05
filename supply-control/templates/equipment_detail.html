@@ -1,0 +1,160 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="row mb-3">
+        <div class="col-md-8">
+          <h2 class="h4">📋 Detalhes do Equipamento</h2>
+        </div>
+        <div class="col-md-4 text-end">
+          <a href="{{ url_for('list_equipment') }}" class="btn btn-secondary btn-sm">← Voltar</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            {% if equipment.equipment_type == 'Computador' %}
+              💻 Computador
+            {% elif equipment.equipment_type == 'Notebook' %}
+              💼 Notebook
+            {% elif equipment.equipment_type == 'Impressora' %}
+              🖨️ Impressora
+            {% elif equipment.equipment_type == 'Carrinho Beira-Leito' %}
+              🛏️ Carrinho Beira-Leito
+            {% endif %}
+            - {{ equipment.host or equipment.ip_address or 'Sem identificação' }}
+          </h5>
+        </div>
+        
+        <div class="card-body">
+          <!-- Status -->
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label class="form-label"><strong>Status</strong></label>
+              {% if equipment.status == 'Ativo' %}
+                <span class="badge bg-success fs-6">✅ Ativo</span>
+              {% elif equipment.status == 'Manutenção' %}
+                <span class="badge bg-warning fs-6">🔧 Manutenção</span>
+              {% else %}
+                <span class="badge bg-danger fs-6">❌ Inativo</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Localização e Tipo -->
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label"><strong>📍 Localização</strong></label>
+              <p>{{ equipment.localization }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label"><strong>📦 Tipo</strong></label>
+              <p>{{ equipment.equipment_type }}</p>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Informações de Rede -->
+          <h6 class="mb-3">🌐 Informações de Rede</h6>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label"><strong>HOST</strong></label>
+              <p><code>{{ equipment.host or '-' }}</code></p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label"><strong>Endereço IP</strong></label>
+              <p><code>{{ equipment.ip_address or '-' }}</code></p>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label"><strong>MAC</strong></label>
+              <p><code>{{ equipment.mac_address or '-' }}</code></p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label"><strong>Patrimônio</strong></label>
+              <p>{{ equipment.patrimony_code or '-' }}</p>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Especificações Técnicas -->
+          <h6 class="mb-3">⚙️ Especificações Técnicas</h6>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label"><strong>Processador</strong></label>
+              <p>{{ equipment.processor or '-' }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label"><strong>Memória RAM</strong></label>
+              <p>{{ equipment.memory_ram or '-' }}</p>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label"><strong>Armazenamento</strong></label>
+              <p>{{ equipment.storage or '-' }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label"><strong>Sistema Operacional</strong></label>
+              <p>{{ equipment.operating_system or '-' }}</p>
+            </div>
+          </div>
+
+          <hr>
+
+          <!-- Informações Adicionais -->
+          <h6 class="mb-3">📝 Informações Adicionais</h6>
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label class="form-label"><strong>Código Monitor SIMPRESS</strong></label>
+              <p>{{ equipment.monitor_code or '-' }}</p>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-12">
+              <label class="form-label"><strong>Última Atualização</strong></label>
+              <p>
+                <small class="text-muted">
+                  {{ equipment.last_updated.strftime('%d/%m/%Y às %H:%M') if equipment.last_updated else '-' }}
+                </small>
+              </p>
+            </div>
+          </div>
+
+          {% if equipment.notes %}
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label class="form-label"><strong>Observações</strong></label>
+                <p>{{ equipment.notes }}</p>
+              </div>
+            </div>
+          {% endif %}
+
+          <hr>
+
+          <!-- Ações -->
+          <div class="row">
+            <div class="col-md-12">
+              <a href="{{ url_for('list_equipment') }}" class="btn btn-secondary">← Voltar para Lista</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações sobre localização -->
+      <div class="alert alert-info mt-4">
+        <strong>ℹ️ Localização:</strong> Este equipamento está localizado em <strong>{{ equipment.localization }}</strong>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

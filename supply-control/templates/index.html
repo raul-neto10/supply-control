@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="d-flex justify-content-between mb-3 align-items-center">
+    <h1 class="h4">Itens em estoque</h1>
+    <a class="btn btn-success" href="{{ url_for('add_item') }}">+ Novo item</a>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      {% if items %}
+        <div class="list-group">
+          {% for item in items %}
+            <a href="{{ url_for('view_item', item_id=item.id) }}" class="list-group-item list-group-item-action">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ item.name }}</h5>
+                <small>{{ item.quantity }} unidades</small>
+              </div>
+              <p class="mb-1 text-muted">{{ item.category }} — {{ item.location or 'Sem local' }}</p>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="alert alert-secondary">Nenhum item registrado ainda.</div>
+      {% endif %}
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Categorias</h5>
+          <ul class="list-unstyled">
+            {% for cat, count in categories %}
+              <li><a href="{{ url_for('by_category', name=cat) }}">{{ cat }}</a> — <strong>{{ count }}</strong></li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

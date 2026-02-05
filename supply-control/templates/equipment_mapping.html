@@ -1,0 +1,242 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<div class="container-fluid">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h1 class="h3">📊 Mapeamento de Equipamentos de TI</h1>
+      <p class="text-muted">Visualize e gerencie todos os equipamentos da instituição</p>
+    </div>
+    <div class="col-md-4 text-end">
+      {% if current_user.is_admin or current_user.is_superadmin %}
+        <a href="{{ url_for('create_new_equipment') }}" class="btn btn-success btn-sm me-2">
+          ➕ Novo Equipamento
+        </a>
+        <a href="{{ url_for('import_equipment') }}" class="btn btn-success btn-sm me-2">
+          📥 Importar Dados
+        </a>
+      {% endif %}
+      <a href="{{ url_for('export_equipment') }}" class="btn btn-info btn-sm">
+        📤 Exportar CSV
+      </a>
+    </div>
+  </div>
+
+  <!-- Estatísticas -->
+  <div class="row mb-4">
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <h6 class="card-title">Total</h6>
+          <h2 id="total-equipment">{{ stats['total_equipment'] }}</h2>
+          <small>Equipamentos</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+      <div class="card bg-info text-white">
+        <div class="card-body">
+          <h6 class="card-title">Computadores</h6>
+          <h2 id="computers">{{ stats['computers'] }}</h2>
+          <small>Desktops</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <h6 class="card-title">Notebooks</h6>
+          <h2 id="notebooks">{{ stats['notebooks'] }}</h2>
+          <small>Portáteis</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body">
+          <h6 class="card-title">Impressoras</h6>
+          <h2 id="printers">{{ stats['printers'] }}</h2>
+          <small>Impressão</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <h6 class="card-title">Carrinhos</h6>
+          <h2 id="bedside-carts">{{ stats['bedside_carts'] }}</h2>
+          <small>Móveis</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card border-success">
+        <div class="card-body text-center">
+          <h3 class="text-success">{{ stats['active'] }}</h3>
+          <p class="mb-0">✅ Ativos</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-warning">
+        <div class="card-body text-center">
+          <h3 class="text-warning">{{ stats['maintenance'] }}</h3>
+          <p class="mb-0">🔧 Em Manutenção</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-danger">
+        <div class="card-body text-center">
+          <h3 class="text-danger">{{ stats['inactive'] }}</h3>
+          <p class="mb-0">❌ Inativos</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="row mb-4">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">📍 Equipamentos por Localização (Top 10)</h6>
+        </div>
+        <div class="card-body">
+          <div id="localization-chart" style="height: 300px;">
+            <canvas id="localizationCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">💻 Distribuição por Sistema Operacional</h6>
+        </div>
+        <div class="card-body">
+          <div id="os-chart" style="height: 300px;">
+            <canvas id="osCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Busca e Navegação -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h6 class="mb-0">🔍 Buscar e Filtrar</h6>
+        </div>
+        <div class="card-body">
+          <form method="GET" action="{{ url_for('list_equipment') }}" class="row">
+            <div class="col-md-3 mb-3">
+              <input type="text" name="search" class="form-control" placeholder="HOST, IP, MAC..." value="{{ request.args.get('search', '') }}">
+            </div>
+            <div class="col-md-3 mb-3">
+              <select name="localization" class="form-select">
+                <option value="">Todas as Localizações</option>
+                {% for loc in localizations %}
+                  <option value="{{ loc }}" {% if request.args.get('localization') == loc %}selected{% endif %}>
+                    {{ loc }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <select name="type" class="form-select">
+                <option value="">Todos os Tipos</option>
+                <option value="Computador" {% if request.args.get('type') == 'Computador' %}selected{% endif %}>Computador</option>
+                <option value="Impressora" {% if request.args.get('type') == 'Impressora' %}selected{% endif %}>Impressora</option>
+                <option value="Carrinho Beira-Leito" {% if request.args.get('type') == 'Carrinho Beira-Leito' %}selected{% endif %}>Carrinho Beira-Leito</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3">
+              <select name="status" class="form-select">
+                <option value="">Todos os Status</option>
+                <option value="Ativo" {% if request.args.get('status') == 'Ativo' %}selected{% endif %}>Ativo</option>
+                <option value="Manutenção" {% if request.args.get('status') == 'Manutenção' %}selected{% endif %}>Manutenção</option>
+                <option value="Inativo" {% if request.args.get('status') == 'Inativo' %}selected{% endif %}>Inativo</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary btn-sm">🔍 Buscar</button>
+              <a href="{{ url_for('list_equipment') }}" class="btn btn-secondary btn-sm">Limpar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botão para ver lista completa -->
+  <div class="row">
+    <div class="col-12">
+      <a href="{{ url_for('list_equipment') }}" class="btn btn-lg btn-outline-primary w-100">
+        📋 Ver Lista Completa de Equipamentos →
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3/dist/chart.min.js"></script>
+
+<script>
+// Dados para o gráfico de localização
+const localizationData = {{ stats['by_localization'] | tojson }};
+const locLabels = localizationData.map(item => item[0]).slice(0, 10);
+const locValues = localizationData.map(item => item[1]).slice(0, 10);
+
+const locCtx = document.getElementById('localizationCanvas').getContext('2d');
+new Chart(locCtx, {
+  type: 'barh',
+  data: {
+    labels: locLabels,
+    datasets: [{
+      label: 'Quantidade',
+      data: locValues,
+      backgroundColor: '#0d6efd',
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    }
+  }
+});
+
+// Dados para o gráfico de SO
+const osData = {{ stats['by_os'] | tojson }};
+const osLabels = osData.map(item => item[0] || 'Desconhecido').filter(label => label);
+const osValues = osData.map((item, index) => (osLabels[index] ? item[1] : 0)).filter((_, index) => osLabels[index]);
+
+const osCtx = document.getElementById('osCanvas').getContext('2d');
+new Chart(osCtx, {
+  type: 'doughnut',
+  data: {
+    labels: osLabels,
+    datasets: [{
+      data: osValues,
+      backgroundColor: [
+        '#0d6efd', '#198754', '#ffc107', '#dc3545', '#17a2b8', '#6f42c1'
+      ],
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+  }
+});
+</script>
+{% endblock %}

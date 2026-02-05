@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h2 class="h5 mb-4">Editar Permissões - {{ user.username }}</h2>
+      
+      <div class="card">
+        <div class="card-body">
+          <form method="post">
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-3">
+              {{ form.is_admin.label(class_='form-label') }}
+              {{ form.is_admin(class_='form-select') }}
+              {% if form.is_admin.errors %}
+                <div class="invalid-feedback d-block">
+                  {% for error in form.is_admin.errors %}
+                    {{ error }}<br>
+                  {% endfor %}
+                </div>
+              {% endif %}
+              <small class="form-text text-muted d-block mt-2">
+                Selecione o nível de acesso para este usuário
+              </small>
+            </div>
+            
+            <div class="alert alert-info">
+              <strong>Informações de Permissões:</strong>
+              <ul class="mb-0 mt-2">
+                <li><strong>Superadmin:</strong> Acesso total ao sistema, gerencia usuários</li>
+                <li><strong>Admin:</strong> Gerencia itens e empréstimos, sem direito de deletar</li>
+                <li><strong>Usuário:</strong> Apenas visualiza e registra movimentações</li>
+              </ul>
+            </div>
+            
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary">Salvar alterações</button>
+              <a class="btn btn-secondary" href="{{ url_for('list_users') }}">Cancelar</a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
